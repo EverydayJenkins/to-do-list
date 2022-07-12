@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "DkHQ70xpL1uUDpa6+7sWNrYwvx+ZDVIRnXXKNhmNa6E/av4zPXJTOxVCaOfowdfNNvMN8rWFa4OuWnGd3rkS+w==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\patry\\OneDrive\\Pulpit\\Projects\\ToDoList\\ToDoList\\ToDoList.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\patry\\.nuget\\packages\\csvhelper\\28.0.0\\csvhelper.28.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
