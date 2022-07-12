@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\patry\\OneDrive\\Pulpit\\Projects\\ToDoList\\ToDoList\\ToDoList.csproj": {}
+    "C:\\Projects\\to-do-list\\ToDoList\\ToDoList.csproj": {}
   },
   "projects": {
-    "C:\\Users\\patry\\OneDrive\\Pulpit\\Projects\\ToDoList\\ToDoList\\ToDoList.csproj": {
+    "C:\\Projects\\to-do-list\\ToDoList\\ToDoList.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\patry\\OneDrive\\Pulpit\\Projects\\ToDoList\\ToDoList\\ToDoList.csproj",
+        "projectUniqueName": "C:\\Projects\\to-do-list\\ToDoList\\ToDoList.csproj",
         "projectName": "ToDoList",
-        "projectPath": "C:\\Users\\patry\\OneDrive\\Pulpit\\Projects\\ToDoList\\ToDoList\\ToDoList.csproj",
+        "projectPath": "C:\\Projects\\to-do-list\\ToDoList\\ToDoList.csproj",
         "packagesPath": "C:\\Users\\patry\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\patry\\OneDrive\\Pulpit\\Projects\\ToDoList\\ToDoList\\obj\\",
+        "outputPath": "C:\\Projects\\to-do-list\\ToDoList\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

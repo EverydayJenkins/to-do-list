@@ -70,10 +70,11 @@ while (true)
     else if (input.StartsWith("start "))
     {
         var isNumeric = int.TryParse(split[1], out _);
-        splitId = Convert.ToInt32(split[1]);
 
         if (isNumeric)
         {
+            splitId = Convert.ToInt32(split[1]);
+
             foreach (var i in list)
             {
                 if (splitId == i.Id)
@@ -88,6 +89,11 @@ while (true)
                         Console.WriteLine("Task number {0} in progress.", i.Id);
                     }
                 }
+
+                else
+                {
+                    Console.WriteLine("Id does not exist");
+                }
             }
         }
 
@@ -95,21 +101,17 @@ while (true)
         {
             Console.WriteLine("Id is not valid");
         }
-
-        else if (splitId > list.Count || splitId < list[0].Id)
-        {
-            Console.WriteLine("Id does not exist");
-        }
     }
 
     //Complete command
     else if (input.StartsWith("complete "))
     {
         var isNumeric = int.TryParse(split[1], out _);
-        splitId = Convert.ToInt32(split[1]);
         
         if (isNumeric)
         {
+            splitId = Convert.ToInt32(split[1]);
+
             foreach (var i in list)
             {
                 if (splitId == i.Id)
@@ -126,17 +128,17 @@ while (true)
                         Console.WriteLine("Task number {0} completed.", i.Id);
                     }
                 }
+
+                else 
+                {
+                    Console.WriteLine("Id does not exist");
+                }
             }
         }
 
         else if (!isNumeric)
         {
             Console.WriteLine("Id is not valid");
-        }
-
-        else if (splitId > list.Count || splitId < list[0].Id)
-        {
-            Console.WriteLine("Id does not exist");
         }
     }
 
@@ -160,8 +162,8 @@ while (true)
             var records = csv.GetRecords<Item>();
             list = records.ToList();
         }
-        Console.WriteLine("File import succeeded");
 
+        Console.WriteLine("File import succeeded");
     }
 
     //Export command
