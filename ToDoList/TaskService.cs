@@ -11,14 +11,18 @@ namespace ToDoList
     public class TaskService
     {   
         public List<ToDoTask> Tasks { get; set; }
+        public string Path { get; set; }
+
+        
         public TaskService()
         {   
             Tasks = new List<ToDoTask>();
+            Path = @"CSV\";
         }
 
         public void Add(string[] array)
         {   
-            if (array.Length > 2 || String.IsNullOrWhiteSpace(array[1]))
+            if (array.Length > 2)
             {
                 Console.WriteLine("Task name cannot contain spaces.");
             }
@@ -41,7 +45,7 @@ namespace ToDoList
 
         public void Show()
         {
-            if (Tasks.Count <= 0)
+            if (Tasks.Count == 0)
             {
                 Console.WriteLine("List is currently empty.");
             }
@@ -126,7 +130,7 @@ namespace ToDoList
 
         public void Export(string[] array)
         {
-            if (Tasks.Count <= 0)
+            if (Tasks.Count == 0)
             {
                 Console.WriteLine("List is currently empty.");
             }
@@ -139,14 +143,13 @@ namespace ToDoList
             else
             {
                 var fileName = array[1];
-                var path = @"CSV\";
 
-                if (!Directory.Exists(path))
+                if (!Directory.Exists(Path))
                 {
-                    Directory.CreateDirectory(path);
+                    Directory.CreateDirectory(Path);
                 }
 
-                using (var writer = new StreamWriter(path + fileName + ".csv"))
+                using (var writer = new StreamWriter(Path + fileName + ".csv"))
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
                     csv.WriteRecords(Tasks);
@@ -159,16 +162,10 @@ namespace ToDoList
         public void Import(string[] array)
         {
             {
-                var path = @"CSV\";
                 var fileName = array[1];
-                var fullPath = path + fileName + ".csv";
+                var fullPath = Path + fileName + ".csv";
 
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                else if (!File.Exists(fullPath))
+                if (!File.Exists(fullPath))
                 {
                     Console.WriteLine("File named '{0}' does not exist.", fileName);
                 }

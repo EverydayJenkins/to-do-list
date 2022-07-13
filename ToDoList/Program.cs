@@ -10,7 +10,7 @@ Console.WriteLine("Welcome to your task list." +
     "\n - Type in 'import file_name' to import .csv file. " +
     "\n - Type in 'export file_name' to export .csv file. ");
 
-var services = new TaskService();
+var taskService = new TaskService();
 
 while (true)
 {
@@ -19,36 +19,36 @@ while (true)
 
     if (input.StartsWith("add "))
     {
-        services.Add(nameSeparator); 
+        taskService.Add(nameSeparator); 
     }
 
     else if (input == "show")
     {
-        services.Show();
+        taskService.Show();
     }
 
     else if (input.StartsWith("start "))
     {
-        services.Start(nameSeparator);
+        taskService.Start(nameSeparator);
     }
 
     else if (input.StartsWith("complete "))
     {
-        services.Complete(nameSeparator);
+        taskService.Complete(nameSeparator);
     }
 
     else if (input.StartsWith("export "))
     {
-        services.Export(nameSeparator);
+        taskService.Export(nameSeparator);
     }
 
     else if (input.StartsWith("import "))
     {
-        services.Import(nameSeparator);
+        taskService.Import(nameSeparator);
     }
 
     else
     {
-        services.Invalid();
+        taskService.Invalid();
     }
 }
