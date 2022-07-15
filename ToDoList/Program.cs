@@ -17,38 +17,34 @@ while (true)
     var input = Console.ReadLine().ToLower();
     var nameSeparator = input.Split(" ");
 
-    if (input.StartsWith("add "))
+    switch (input)
     {
-        taskService.Add(nameSeparator); 
-    }
+        case { } when input.StartsWith("add"):
+            taskService.Add(nameSeparator);
+            break;
 
-    else if (input == "show")
-    {
-        taskService.Show();
-    }
+        case { } when input.StartsWith("show"):
+            taskService.Show();
+            break;
 
-    else if (input.StartsWith("start "))
-    {
-        taskService.Start(nameSeparator);
-    }
+        case { } when input.StartsWith("start"):
+            taskService.Start(nameSeparator);
+            break;
 
-    else if (input.StartsWith("complete "))
-    {
-        taskService.Complete(nameSeparator);
-    }
+        case { } when input.StartsWith("complete"):
+            taskService.Complete(nameSeparator);
+            break;
 
-    else if (input.StartsWith("export "))
-    {
-        taskService.Export(nameSeparator);
-    }
+        case { } when input.StartsWith("export"):
+            taskService.Export(nameSeparator);
+            break;
 
-    else if (input.StartsWith("import "))
-    {
-        taskService.Import(nameSeparator);
-    }
+        case { } when input.StartsWith("import"):
+            taskService.Import(nameSeparator);
+            break;
 
-    else
-    {
-        taskService.Invalid();
+        default:
+            taskService.Invalid();
+            break;
     }
 }
