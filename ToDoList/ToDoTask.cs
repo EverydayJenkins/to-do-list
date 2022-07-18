@@ -13,6 +13,5 @@ namespace ToDoList
         public DateTime DateAdded { get; set; }
         public string Status { get; set; }
         public DateTime? DateFinished { get; set; }
-
     }
 }

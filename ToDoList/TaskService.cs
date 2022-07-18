@@ -21,9 +21,9 @@ namespace ToDoList
 
         public void Add(string[] array)
         {
-            if (array.Length > 2)
+            if (array.Length > 2 || string.IsNullOrWhiteSpace(array[1]))
             {
-                Console.WriteLine("Task name cannot contain spaces.");
+                Console.WriteLine("Task name cannot be empty or contain spaces.");
             }
 
             else
@@ -37,7 +37,6 @@ namespace ToDoList
                 };
 
                 Tasks.Add(task);
-
                 Console.WriteLine("Task with id {0} added successfully.", task.Id);
             }
         }
@@ -69,24 +68,20 @@ namespace ToDoList
         public void Start(string[] array)
         {
             var isNumeric = int.TryParse(array[1], out var id);
-             
+
             if (isNumeric && id > 0 && id <= Tasks.Count)
             {
-                foreach (var t in Tasks)
-                {
-                    if (id == t.Id)
-                    {
-                        if (t.Status == "In progress")
-                        {
-                            Console.WriteLine("Task is already in progress.");
-                        }
+                var task = Tasks.First(t => t.Id == id);
 
-                        else
-                        {
-                            t.Status = "In progress";
-                            Console.WriteLine("Task with id {0} in progress.", t.Id);
-                        }
-                    }
+                if (task.Status == "In progress")
+                {
+                    Console.WriteLine("Task is already in progress.");
+                }
+
+                else
+                {
+                    task.Status = "In progress";
+                    Console.WriteLine("Task with id {0} in progress.", task.Id);
                 }
             }
 
@@ -102,22 +97,18 @@ namespace ToDoList
 
             if (isNumeric && id > 0 && id <= Tasks.Count)
             {
-                foreach (var i in Tasks)
-                {
-                    if (id == i.Id)
-                    {
-                        if (i.Status == "Completed")
-                        {
-                            Console.WriteLine("Task has already been completed.");
-                        }
+                var task = Tasks.First(t => t.Id == id);
 
-                        else
-                        {
-                            i.Status = "Completed";
-                            i.DateFinished = DateTime.Now;
-                            Console.WriteLine("Task with id {0} completed.", i.Id);
-                        }
-                    }
+                if (task.Status == "Completed")
+                {
+                    Console.WriteLine("Task has already been completed.");
+                }
+
+                else
+                {
+                    task.Status = "Completed";
+                    task.DateFinished = DateTime.Now;
+                    Console.WriteLine("Task with id {0} completed.", task.Id);
                 }
             }
 
@@ -160,26 +151,24 @@ namespace ToDoList
 
         public void Import(string[] array)
         {
+            var fileName = array[1];
+            var fullPath = Path + fileName + ".csv";
+
+            if (!File.Exists(fullPath))
             {
-                var fileName = array[1];
-                var fullPath = Path + fileName + ".csv";
+                Console.WriteLine("File named '{0}' does not exist.", fileName);
+            }
 
-                if (!File.Exists(fullPath))
+            else
+            {
+                using (var reader = new StreamReader(fullPath))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
-                    Console.WriteLine("File named '{0}' does not exist.", fileName);
+                    var records = csv.GetRecords<ToDoTask>();
+                    Tasks = records.ToList();
                 }
 
-                else
-                {
-                    using (var reader = new StreamReader(fullPath))
-                    using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-                    {
-                        var records = csv.GetRecords<ToDoTask>();
-                        Tasks = records.ToList();
-                    }
-
-                    Console.WriteLine("File imported.");
-                }
+                Console.WriteLine("File imported.");
             }
         }
 
