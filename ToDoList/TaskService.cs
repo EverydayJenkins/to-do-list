@@ -10,53 +10,52 @@ namespace ToDoList
 {
     public class TaskService
     {
-        public List<ToDoTask> Tasks { get; set; }
-        public string Path { get; set; }
+        private const string INVALID_TASK_NAME_MSG = "Task name cannot be empty or contain spaces.";
+
+        private List<ToDoTask> _tasks;
+
+        private readonly string _path;
 
         public TaskService()
         {
-            Tasks = new List<ToDoTask>();
-            Path = @"CSV\";
+            _tasks = new List<ToDoTask>();
+            _path = @"CSV\";
         }
 
-        public void Add(string[] array)
+        public void Add(string[] commandArray)
         {
-            if (array.Length == 2 && !string.IsNullOrWhiteSpace(array[1]))
+            if (commandArray.Length != 2 || string.IsNullOrWhiteSpace(commandArray[1]))
             {
-                var task = new ToDoTask
-                {
-                    Name = array[1],
-                    DateAdded = DateTime.Now,
-                    Status = "New",
-                    Id = Tasks.Count + 1
-                };
-
-                Tasks.Add(task);
-                Console.WriteLine("Task with id {0} added successfully.", task.Id);
+                Console.WriteLine(INVALID_TASK_NAME_MSG);
+                return;
             }
 
-            else
+            var task = new ToDoTask
             {
-                Console.WriteLine("Task name cannot be empty or contain spaces.");
-            }
+                Name = commandArray[1],
+                DateAdded = DateTime.Now,
+                Status = "New",
+                Id = _tasks.Count + 1
+            };
+
+            _tasks.Add(task);
+            Console.WriteLine("Task with id {0} added successfully.", task.Id);
         }
 
         public void Show()
         {
-            if (Tasks.Count == 0)
+            if (_tasks.Count == 0)
             {
                 Console.WriteLine("List is currently empty.");
             }
-
             else
             {
-                foreach (var i in Tasks)
+                foreach (var i in _tasks)
                 {
                     if (i.Status == "Completed")
                     {
                         Console.WriteLine("Id: {0}, Name: {1} Added: {2}, Status: {3}, Finished: {4}", i.Id, i.Name, i.DateAdded, i.Status, i.DateFinished);
                     }
-
                     else
                     {
                         Console.WriteLine("Id: {0}, Name: {1}, Added: {2}, Status: {3}", i.Id, i.Name, i.DateAdded, i.Status);
@@ -68,26 +67,23 @@ namespace ToDoList
         public void Start(string[] array)
         {
             var isNumeric = int.TryParse(array[1], out var id);
+            var task = _tasks.FirstOrDefault(t => t.Id == id);
 
-            if (isNumeric && id > 0 && id <= Tasks.Count)
-            {
-                var task = Tasks.First(t => t.Id == id);
-
-                if (task.Status == "In progress")
-                {
-                    Console.WriteLine("Task is already in progress.");
-                }
-
-                else
-                {
-                    task.Status = "In progress";
-                    Console.WriteLine("Task with id {0} in progress.", task.Id);
-                }
-            }
-
-            else
+            if (task is null)
             {
                 Console.WriteLine("Invalid Id.");
+                return;
+            }
+
+            if (task.Status == "In progress")
+            {
+                Console.WriteLine("Task is already in progress.");
+                return;
+            }
+            else
+            {
+                task.Status = "In progress";
+                Console.WriteLine("Task with id {0} in progress.", task.Id);
             }
         }
 
@@ -95,15 +91,14 @@ namespace ToDoList
         {
             var isNumeric = int.TryParse(array[1], out var id);
 
-            if (isNumeric && id > 0 && id <= Tasks.Count)
+            if (isNumeric && id > 0 && id <= _tasks.Count)
             {
-                var task = Tasks.First(t => t.Id == id);
+                var task = _tasks.First(t => t.Id == id);
 
                 if (task.Status == "Completed")
                 {
                     Console.WriteLine("Task has already been completed.");
                 }
-
                 else
                 {
                     task.Status = "Completed";
@@ -111,7 +106,6 @@ namespace ToDoList
                     Console.WriteLine("Task with id {0} completed.", task.Id);
                 }
             }
-
             else
             {
                 Console.WriteLine("Invalid Id.");
@@ -120,7 +114,7 @@ namespace ToDoList
 
         public void Export(string[] array)
         {
-            if (Tasks.Count == 0)
+            if (_tasks.Count == 0)
             {
                 Console.WriteLine("List is currently empty.");
             }
@@ -134,15 +128,15 @@ namespace ToDoList
             {
                 var fileName = array[1];
 
-                if (!Directory.Exists(Path))
+                if (!Directory.Exists(_path))
                 {
-                    Directory.CreateDirectory(Path);
+                    Directory.CreateDirectory(_path);
                 }
 
-                using (var writer = new StreamWriter(Path + fileName + ".csv"))
+                using (var writer = new StreamWriter(_path + fileName + ".csv"))
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
-                    csv.WriteRecords(Tasks);
+                    csv.WriteRecords(_tasks);
                 }
 
                 Console.WriteLine("File saved.");
@@ -152,7 +146,7 @@ namespace ToDoList
         public void Import(string[] array)
         {
             var fileName = array[1];
-            var fullPath = Path + fileName + ".csv";
+            var fullPath = _path + fileName + ".csv";
 
             if (!File.Exists(fullPath))
             {
@@ -165,14 +159,14 @@ namespace ToDoList
                 using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     var records = csv.GetRecords<ToDoTask>();
-                    Tasks = records.ToList();
+                    _tasks = records.ToList();
                 }
 
                 Console.WriteLine("File imported.");
             }
         }
 
-        public void Invalid()
+        public static void Invalid()
         {
             Console.WriteLine("Invalid command.");
         }

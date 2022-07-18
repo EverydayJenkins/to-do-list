@@ -10,36 +10,38 @@ var taskService = new TaskService();
 while (true)
 {
     var input = Console.ReadLine().ToLower();
-    var nameSeparator = input.Split(" ");
+    var inputSplitted = input.Split(" ");
 
-    switch (input)
+    var command = inputSplitted[0];
+
+    switch (command)
     {
-        case { } when input.StartsWith("add"):
-            taskService.Add(nameSeparator);
+        case "add":
+            taskService.Add(inputSplitted);
             break;
 
-        case { } when input.StartsWith("show"):
+        case "show":
             taskService.Show();
             break;
 
-        case { } when input.StartsWith("start"):
-            taskService.Start(nameSeparator);
+        case "start":
+            taskService.Start(inputSplitted);
             break;
 
-        case { } when input.StartsWith("complete"):
-            taskService.Complete(nameSeparator);
+        case "complete":
+            taskService.Complete(inputSplitted);
             break;
 
-        case { } when input.StartsWith("export"):
-            taskService.Export(nameSeparator);
+        case "export":
+            taskService.Export(inputSplitted);
             break;
 
-        case { } when input.StartsWith("import"):
-            taskService.Import(nameSeparator);
+        case "import":
+            taskService.Import(inputSplitted);
             break;
 
         default:
-            taskService.Invalid();
+            TaskService.Invalid();
             break;
     }
 }
