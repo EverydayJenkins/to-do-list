@@ -21,12 +21,7 @@ namespace ToDoList
 
         public void Add(string[] array)
         {
-            if (array.Length > 2 || string.IsNullOrWhiteSpace(array[1]))
-            {
-                Console.WriteLine("Task name cannot be empty or contain spaces.");
-            }
-
-            else
+            if (array.Length == 2 && !string.IsNullOrWhiteSpace(array[1]))
             {
                 var task = new ToDoTask
                 {
@@ -38,6 +33,11 @@ namespace ToDoList
 
                 Tasks.Add(task);
                 Console.WriteLine("Task with id {0} added successfully.", task.Id);
+            }
+
+            else
+            {
+                Console.WriteLine("Task name cannot be empty or contain spaces.");
             }
         }
 
