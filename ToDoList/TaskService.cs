@@ -16,8 +16,6 @@ namespace ToDoList
 
         private readonly List<ToDoTask> _tasks;
         private readonly string _path;
-        private readonly string[] _statusArray = { "New", "In progress", "Complete" };
-
 
         public TaskService()
         {
@@ -37,7 +35,7 @@ namespace ToDoList
             {
                 Name = commandArray[1],
                 DateAdded = DateTime.Now,
-                Status = _statusArray[0],
+                Status = TaskStatus.New,
                 Id = _tasks.Count + 1
             };
 
@@ -55,7 +53,7 @@ namespace ToDoList
 
             foreach (var i in _tasks)
             {
-                if (i.Status == _statusArray[2])
+                if (i.Status == TaskStatus.Completed)
                 {
                     Console.WriteLine("Id: {0}, Name: {1} Added: {2}, Status: {3}, Finished: {4}", i.Id, i.Name, i.DateAdded, i.Status, i.DateFinished);
                 }
@@ -89,14 +87,14 @@ namespace ToDoList
                 return;
             }
 
-            if (task.Status == _statusArray[1])
+            if (task.Status == TaskStatus.InProgress)
             {
                 Console.WriteLine("Task is already in progress.");
                 return;
             }
             else
             {
-                task.Status = _statusArray[1];
+                task.Status = TaskStatus.InProgress;
                 Console.WriteLine("Task with id {0} in progress.", task.Id);
             }
         }
@@ -124,13 +122,13 @@ namespace ToDoList
                 return;
             }
 
-            if (task.Status == _statusArray[2])
+            if (task.Status == TaskStatus.Completed)
             {
                 Console.WriteLine("Task has already been completed.");
             }
             else
             {
-                task.Status = _statusArray[2];
+                task.Status = TaskStatus.Completed;
                 task.DateFinished = DateTime.Now;
                 Console.WriteLine("Task with id {0} completed.", task.Id);
             }
@@ -182,17 +180,25 @@ namespace ToDoList
                 return;
             }
 
-            using (var reader = new StreamReader(fullPath))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            try
             {
-                var records = csv.GetRecords<ToDoTask>();
-                var importedList = records.ToList();
-
-                foreach (var i in importedList)
+                using (var reader = new StreamReader(fullPath))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
-                    i.Id = _tasks.Count + 1;
-                    _tasks.Add(i);
+                    var records = csv.GetRecords<ToDoTask>();
+                    var importedList = records.ToList();
+
+                    foreach (var i in importedList)
+                    {
+                        i.Id = _tasks.Count + 1;
+                        _tasks.Add(i);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Import failed: {ex.Message}");
+                return;
             }
 
             Console.WriteLine("File imported.");
