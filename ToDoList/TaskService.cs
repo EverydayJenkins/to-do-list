@@ -23,6 +23,17 @@ namespace ToDoList
             _path = @"CSV\";
         }
 
+        private static string GetStatus(ToDoTask task)
+        {
+            return task.Status switch
+            {
+                TaskStatus.New => "New",
+                TaskStatus.InProgress => "In progress",
+                TaskStatus.Completed => "Completed",
+                _ => "New",
+            };
+        }
+
         public void Add(string[] commandArray)
         {
             if (commandArray.Length != 2 || string.IsNullOrWhiteSpace(commandArray[1]))
@@ -53,13 +64,15 @@ namespace ToDoList
 
             foreach (var i in _tasks)
             {
+                var stringStatus = GetStatus(i);
+
                 if (i.Status == TaskStatus.Completed)
                 {
-                    Console.WriteLine("Id: {0}, Name: {1} Added: {2}, Status: {3}, Finished: {4}", i.Id, i.Name, i.DateAdded, i.Status, i.DateFinished);
+                    Console.WriteLine("Id: {0}, Name: {1} Added: {2}, Status: {3}, Finished: {4}", i.Id, i.Name, i.DateAdded, stringStatus, i.DateFinished);
                 }
                 else
                 {
-                    Console.WriteLine("Id: {0}, Name: {1}, Added: {2}, Status: {3}", i.Id, i.Name, i.DateAdded, i.Status);
+                    Console.WriteLine("Id: {0}, Name: {1}, Added: {2}, Status: {3}", i.Id, i.Name, i.DateAdded, stringStatus);
                 }
             }
         }
@@ -84,13 +97,10 @@ namespace ToDoList
             if (task is null)
             {
                 Console.WriteLine(INVALID_TASK_ID_MSG);
-                return;
             }
-
-            if (task.Status == TaskStatus.InProgress)
+            else if (task.Status == TaskStatus.InProgress)
             {
                 Console.WriteLine("Task is already in progress.");
-                return;
             }
             else
             {
@@ -119,10 +129,8 @@ namespace ToDoList
             if (task is null)
             {
                 Console.WriteLine(INVALID_TASK_ID_MSG);
-                return;
             }
-
-            if (task.Status == TaskStatus.Completed)
+            else if (task.Status == TaskStatus.Completed)
             {
                 Console.WriteLine("Task has already been completed.");
             }
@@ -139,12 +147,16 @@ namespace ToDoList
             if (_tasks.Count == 0)
             {
                 Console.WriteLine(LIST_IS_EMPTY_MSG);
+                return;
             }
-            else if (commandArray.Length != 2)
+
+            if (commandArray.Length != 2)
             {
                 Console.WriteLine(INVALID_NAME_MSG);
+                return;
             }
-            else
+
+            try
             {
                 var fileName = commandArray[1];
 
@@ -153,13 +165,15 @@ namespace ToDoList
                     Directory.CreateDirectory(_path);
                 }
 
-                using (var writer = new StreamWriter(_path + fileName + ".csv"))
-                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                {
-                    csv.WriteRecords(_tasks);
-                }
-
+                using var writer = new StreamWriter(_path + fileName + ".csv");
+                using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+                csv.WriteRecords(_tasks);
                 Console.WriteLine("File saved.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Export failed: {ex.Message}");
+                return;
             }
         }
 
@@ -182,17 +196,15 @@ namespace ToDoList
 
             try
             {
-                using (var reader = new StreamReader(fullPath))
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-                {
-                    var records = csv.GetRecords<ToDoTask>();
-                    var importedList = records.ToList();
+                using var reader = new StreamReader(fullPath);
+                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+                var records = csv.GetRecords<ToDoTask>();
+                var importedList = records.ToList();
 
-                    foreach (var i in importedList)
-                    {
-                        i.Id = _tasks.Count + 1;
-                        _tasks.Add(i);
-                    }
+                foreach (var i in importedList)
+                {
+                    i.Id = _tasks.Count + 1;
+                    _tasks.Add(i);
                 }
             }
             catch (Exception ex)
