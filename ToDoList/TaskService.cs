@@ -23,16 +23,12 @@ namespace ToDoList
             _path = @"CSV\";
         }
 
-        private static string GetStatus(ToDoTask task)
+        private readonly Dictionary<TaskStatus, string> StatusDictionary = new()
         {
-            return task.Status switch
-            {
-                TaskStatus.New => "New",
-                TaskStatus.InProgress => "In progress",
-                TaskStatus.Completed => "Completed",
-                _ => "New",
-            };
-        }
+            { TaskStatus.New, "New" },
+            { TaskStatus.InProgress, "In progress" },
+            { TaskStatus.Completed, "Completed" }
+        };
 
         public void Add(string[] commandArray)
         {
@@ -64,7 +60,7 @@ namespace ToDoList
 
             foreach (var i in _tasks)
             {
-                var stringStatus = GetStatus(i);
+                var stringStatus = StatusDictionary[i.Status];
 
                 if (i.Status == TaskStatus.Completed)
                 {
